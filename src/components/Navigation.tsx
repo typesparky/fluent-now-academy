@@ -24,13 +24,21 @@ const Navigation = () => {
                 key={path}
                 to={path}
                 className={cn(
-                  "flex flex-col items-center py-2 px-3 rounded-lg transition-all duration-200",
+                  "flex flex-col items-center py-2 px-3 rounded-lg transition-all duration-200 relative",
                   isActive
                     ? "text-indigo-600 bg-indigo-50"
                     : "text-gray-600 hover:text-indigo-600 hover:bg-gray-50"
                 )}
               >
-                <Icon className={cn("w-6 h-6 mb-1", isActive && "scale-110")} />
+                {isActive && (
+                  <div className="absolute -top-1 w-2 h-2 rounded-full bg-indigo-600"></div>
+                )}
+                <Icon className={cn(
+                  "w-6 h-6 mb-1 transition-all", 
+                  isActive && "scale-110"
+                )} 
+                fill={isActive ? "currentColor" : "none"}
+                />
                 <span className="text-xs font-medium">{label}</span>
               </Link>
             );

@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Mic, Volume2, RotateCcw, Play, Coffee, Briefcase, Plane, Zap, Star } from "lucide-react";
+import { Mic, Volume2, RotateCcw, Play, Coffee, Briefcase, Plane, Zap, Star, ChevronLeft, MessageCircle, Target } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const SpeakingGym = () => {
   const [isRecording, setIsRecording] = useState(false);
-  const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
+  const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [performanceScore, setPerformanceScore] = useState(0);
   const [perfectPhrases, setPerfectPhrases] = useState<string[]>([]);
   const [coachExpression, setCoachExpression] = useState("😊");
@@ -59,69 +59,101 @@ const SpeakingGym = () => {
   };
 
   useEffect(() => {
-    if (selectedScenario) {
+    if (selectedMode) {
       setPerformanceScore(0);
       setPerfectPhrases([]);
       setCoachExpression("😊");
     }
-  }, [selectedScenario]);
+  }, [selectedMode]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4">
       <div className="max-w-md mx-auto space-y-6">
-        {/* Header */}
-        <div className="text-center pt-8 pb-4">
-          <h1 className="text-2xl font-bold text-purple-900 mb-2">Speaking Gym</h1>
-          <p className="text-purple-600">Choose your practice scenario</p>
+        {/* Refined Header */}
+        <div className="text-center pt-6 pb-2">
+          <h1 className="text-2xl font-semibold text-purple-900 mb-1">Speaking Gym</h1>
+          <p className="text-purple-600 font-light">Choose your practice mode</p>
         </div>
 
-        {/* Scenario Selection */}
-        {!selectedScenario && (
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-800">Today's Workouts</h2>
-            {scenarios.map((scenario) => {
-              const IconComponent = scenario.icon;
-              return (
-                <Card 
-                  key={scenario.id}
-                  className="bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all cursor-pointer hover:scale-[1.02]"
-                  onClick={() => setSelectedScenario(scenario.id)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-4">
-                      <div className={`${scenario.color} p-3 rounded-full text-white`}>
-                        <IconComponent className="w-6 h-6" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{scenario.title}</h3>
-                        <p className="text-sm text-gray-600">{scenario.description}</p>
-                        <Badge variant="outline" className="mt-1 text-xs">
-                          {scenario.difficulty}
-                        </Badge>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+        {/* Main Selection Screen */}
+        {!selectedMode && (
+          <div className="space-y-6">
+            {/* Central FluentChat Option */}
+            <Card 
+              className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-xl hover:shadow-2xl transition-all cursor-pointer hover:scale-[1.02] border-0"
+              onClick={() => setSelectedMode("fluent-chat")}
+            >
+              <CardContent className="p-6">
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-4">
+                    <MessageCircle className="w-8 h-8" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">FluentChat</h2>
+                    <p className="text-white/90 text-lg mb-4">
+                      Have a natural conversation about anything that interests you
+                    </p>
+                    <Badge className="bg-white/20 text-white border-white/30 px-4 py-1 text-sm">
+                      🌟 Most Popular
+                    </Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Side Tasks - Scenario Workouts */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Target className="w-5 h-5 text-gray-600" />
+                <h3 className="text-lg font-semibold text-gray-800">Targeted Workouts</h3>
+              </div>
+              <div className="space-y-3">
+                {scenarios.map((scenario) => {
+                  const IconComponent = scenario.icon;
+                  return (
+                    <Card 
+                      key={scenario.id}
+                      className="bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all cursor-pointer hover:scale-[1.01]"
+                      onClick={() => setSelectedMode(scenario.id)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-4">
+                          <div className={`${scenario.color} p-3 rounded-full text-white`}>
+                            <IconComponent className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-gray-900">{scenario.title}</h4>
+                            <p className="text-sm text-gray-600">{scenario.description}</p>
+                            <Badge variant="outline" className="mt-1 text-xs">
+                              {scenario.difficulty}
+                            </Badge>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         )}
 
         {/* Active Session */}
-        {selectedScenario && (
+        {selectedMode && (
           <div className="space-y-6">
             <Button
               variant="outline"
-              onClick={() => setSelectedScenario(null)}
-              className="mb-4"
+              onClick={() => setSelectedMode(null)}
+              className="mb-4 hover:scale-105 transition-transform"
             >
-              ← Back to scenarios
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Back
             </Button>
 
             {/* Live Performance Meter */}
             {isRecording && (
               <Card className="bg-gradient-to-r from-green-400 to-emerald-500 text-white">
-                <CardContent className="p-4">
+                <CardContent className="p-5">
                   <div className="flex items-center gap-3 mb-3">
                     <Zap className="w-5 h-5" />
                     <span className="font-semibold">Live Performance</span>
@@ -139,9 +171,9 @@ const SpeakingGym = () => {
               </Card>
             )}
 
-            {/* Expressive AI Coach Card */}
+            {/* Enhanced AI Coach Card */}
             <Card className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2">
                   <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl transition-all duration-500">
                     {coachExpression}
@@ -154,11 +186,13 @@ const SpeakingGym = () => {
                   </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6 pt-0">
                 <div className="space-y-3">
-                  <div className="bg-white/10 p-3 rounded-lg">
+                  <div className="bg-white/10 p-4 rounded-lg">
                     <p className="text-white/90">
-                      "¡Hola! I'm your barista today. What would you like to order?"
+                      {selectedMode === "fluent-chat" 
+                        ? "¡Hola! What would you like to talk about today? I'm here to help you practice!"
+                        : "¡Hola! I'm your barista today. What would you like to order?"}
                     </p>
                   </div>
                   
@@ -184,7 +218,7 @@ const SpeakingGym = () => {
                   <Button
                     variant="secondary"
                     size="sm"
-                    className="bg-white/20 text-white hover:bg-white/30"
+                    className="bg-white/20 text-white hover:bg-white/30 hover:scale-105 transition-transform"
                   >
                     <Volume2 className="w-4 h-4 mr-2" />
                     Replay
@@ -193,14 +227,14 @@ const SpeakingGym = () => {
               </CardContent>
             </Card>
 
-            {/* Recording Interface */}
+            {/* Enhanced Recording Interface */}
             <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
-              <CardContent className="p-6 text-center">
+              <CardContent className="p-8 text-center">
                 <div className="space-y-4">
                   <div className="relative">
                     <Button
                       size="lg"
-                      className={`w-20 h-20 rounded-full transition-all duration-300 ${
+                      className={`w-20 h-20 rounded-full transition-all duration-300 shadow-lg ${
                         isRecording 
                           ? 'bg-red-500 hover:bg-red-600 animate-pulse scale-110' 
                           : 'bg-green-500 hover:bg-green-600 hover:scale-105'
@@ -219,7 +253,9 @@ const SpeakingGym = () => {
                       {isRecording ? "Listening... speak clearly!" : "Tap to speak"}
                     </p>
                     <p className="text-sm text-gray-600">
-                      Try: "Hola, me gustaría un café con leche, por favor"
+                      {selectedMode === "fluent-chat" 
+                        ? "Talk about anything - your hobbies, dreams, or daily life"
+                        : "Try: 'Hola, me gustaría un café con leche, por favor'"}
                     </p>
                   </div>
 
@@ -239,7 +275,7 @@ const SpeakingGym = () => {
 
             {/* Enhanced Feedback Card */}
             <Card className="bg-green-50 border-green-200 shadow-lg">
-              <CardContent className="p-4">
+              <CardContent className="p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-sm font-medium text-green-800 flex items-center gap-1">

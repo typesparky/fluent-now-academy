@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +7,7 @@ import { useState, useEffect } from "react";
 
 const SpeakingGym = () => {
   const [isRecording, setIsRecording] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [performanceScore, setPerformanceScore] = useState(0);
   const [perfectPhrases, setPerfectPhrases] = useState<string[]>([]);
@@ -41,8 +41,8 @@ const SpeakingGym = () => {
   ];
 
   const handleStartRecording = () => {
-    setIsRecording(!isRecording);
-    if (!isRecording) {
+    if (!isRecording && !isProcessing) {
+      setIsRecording(true);
       setCoachExpression("👂");
       // Simulate live performance feedback
       const interval = setInterval(() => {
@@ -52,8 +52,15 @@ const SpeakingGym = () => {
       setTimeout(() => {
         clearInterval(interval);
         setIsRecording(false);
-        setCoachExpression("😄");
-        setPerfectPhrases(["por favor", "café con leche"]);
+        setIsProcessing(true);
+        setCoachExpression("🤔");
+        
+        // Simulate AI processing time
+        setTimeout(() => {
+          setIsProcessing(false);
+          setCoachExpression("😄");
+          setPerfectPhrases(["por favor", "café con leche"]);
+        }, 2000);
       }, 3000);
     }
   };
@@ -63,8 +70,40 @@ const SpeakingGym = () => {
       setPerformanceScore(0);
       setPerfectPhrases([]);
       setCoachExpression("😊");
+      setIsRecording(false);
+      setIsProcessing(false);
     }
   }, [selectedMode]);
+
+  // Audio waveform simulation component
+  const AudioWaveform = () => (
+    <div className="flex items-center justify-center gap-1">
+      {[...Array(5)].map((_, i) => (
+        <div
+          key={i}
+          className="w-1 bg-white rounded-full animate-pulse"
+          style={{
+            height: `${Math.random() * 16 + 8}px`,
+            animationDelay: `${i * 0.1}s`,
+            animationDuration: '0.6s'
+          }}
+        />
+      ))}
+    </div>
+  );
+
+  // Processing spinner component
+  const ProcessingSpinner = () => (
+    <div className="flex items-center justify-center gap-1">
+      {[...Array(3)].map((_, i) => (
+        <div
+          key={i}
+          className="w-2 h-2 bg-white rounded-full animate-bounce"
+          style={{ animationDelay: `${i * 0.2}s` }}
+        />
+      ))}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4">
@@ -181,7 +220,9 @@ const SpeakingGym = () => {
                   <div>
                     <div className="font-semibold">Maria - Your AI Coach</div>
                     <div className="text-sm opacity-75">
-                      {isRecording ? "Listening carefully..." : "Ready to chat!"}
+                      {isRecording ? "Listening carefully..." : 
+                       isProcessing ? "Thinking about your response..." : 
+                       "Ready to chat!"}
                     </div>
                   </div>
                 </CardTitle>
@@ -227,22 +268,38 @@ const SpeakingGym = () => {
               </CardContent>
             </Card>
 
-            {/* Enhanced Recording Interface */}
+            {/* Enhanced Recording Interface with Dynamic States */}
             <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
               <CardContent className="p-8 text-center">
                 <div className="space-y-4">
                   <div className="relative">
                     <Button
                       size="lg"
-                      className={`w-20 h-20 rounded-full transition-all duration-300 shadow-lg ${
+                      className={`w-20 h-20 rounded-full transition-all duration-300 shadow-xl relative overflow-hidden ${
                         isRecording 
-                          ? 'bg-red-500 hover:bg-red-600 animate-pulse scale-110' 
-                          : 'bg-green-500 hover:bg-green-600 hover:scale-105'
-                      }`}
+                          ? 'bg-gradient-to-b from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 scale-110' 
+                          : isProcessing
+                          ? 'bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700'
+                          : 'bg-gradient-to-b from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 hover:scale-105 animate-pulse'
+                      } active:scale-95`}
                       onClick={handleStartRecording}
+                      disabled={isProcessing}
                     >
-                      <Mic className="w-8 h-8" />
+                      {isRecording ? (
+                        <AudioWaveform />
+                      ) : isProcessing ? (
+                        <ProcessingSpinner />
+                      ) : (
+                        <Mic className="w-8 h-8" />
+                      )}
                     </Button>
+                    
+                    {/* Pulsing glow effect when ready */}
+                    {!isRecording && !isProcessing && (
+                      <div className="absolute -inset-4 bg-green-400/30 rounded-full animate-ping"></div>
+                    )}
+                    
+                    {/* Recording pulse effect */}
                     {isRecording && (
                       <div className="absolute -inset-4 border-4 border-red-300 rounded-full animate-ping"></div>
                     )}
@@ -250,7 +307,9 @@ const SpeakingGym = () => {
                   
                   <div className="space-y-2">
                     <p className="font-medium text-gray-900">
-                      {isRecording ? "Listening... speak clearly!" : "Tap to speak"}
+                      {isRecording ? "Listening... speak clearly!" : 
+                       isProcessing ? "Processing your response..." :
+                       "Tap to speak"}
                     </p>
                     <p className="text-sm text-gray-600">
                       {selectedMode === "fluent-chat" 

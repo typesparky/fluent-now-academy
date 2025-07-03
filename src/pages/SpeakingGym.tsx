@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Mic, Volume2, RotateCcw, Play, Coffee, Briefcase, Plane, Zap, Star, ChevronLeft, MessageCircle, Target } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const SpeakingGym = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -12,6 +13,7 @@ const SpeakingGym = () => {
   const [performanceScore, setPerformanceScore] = useState(0);
   const [perfectPhrases, setPerfectPhrases] = useState<string[]>([]);
   const [coachExpression, setCoachExpression] = useState("😊");
+  const isMobile = useIsMobile();
 
   const scenarios = [
     {
@@ -44,7 +46,6 @@ const SpeakingGym = () => {
     if (!isRecording && !isProcessing) {
       setIsRecording(true);
       setCoachExpression("👂");
-      // Simulate live performance feedback
       const interval = setInterval(() => {
         setPerformanceScore(prev => Math.min(prev + Math.random() * 20, 95));
       }, 500);
@@ -55,7 +56,6 @@ const SpeakingGym = () => {
         setIsProcessing(true);
         setCoachExpression("🤔");
         
-        // Simulate AI processing time
         setTimeout(() => {
           setIsProcessing(false);
           setCoachExpression("😄");
@@ -75,7 +75,6 @@ const SpeakingGym = () => {
     }
   }, [selectedMode]);
 
-  // Audio waveform simulation component
   const AudioWaveform = () => (
     <div className="flex items-center justify-center gap-1">
       {[...Array(5)].map((_, i) => (
@@ -92,7 +91,6 @@ const SpeakingGym = () => {
     </div>
   );
 
-  // Processing spinner component
   const ProcessingSpinner = () => (
     <div className="flex items-center justify-center gap-1">
       {[...Array(3)].map((_, i) => (
@@ -107,19 +105,19 @@ const SpeakingGym = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4">
-      <div className="max-w-md mx-auto space-y-6">
-        {/* Refined Header */}
+      <div className={`mx-auto space-y-6 ${isMobile ? 'max-w-md' : 'max-w-4xl'}`}>
+        {/* Header */}
         <div className="text-center pt-6 pb-2">
           <h1 className="text-2xl font-semibold text-purple-900 mb-1">Speaking Gym</h1>
           <p className="text-purple-600 font-light">Choose your practice mode</p>
         </div>
 
-        {/* Main Selection Screen */}
+        {/* Selection Screen */}
         {!selectedMode && (
-          <div className="space-y-6">
-            {/* Central FluentChat Option */}
+          <div className={`space-y-6 ${!isMobile ? 'grid grid-cols-2 gap-6' : ''}`}>
+            {/* FluentChat - Main Option */}
             <Card 
-              className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-xl hover:shadow-2xl transition-all cursor-pointer hover:scale-[1.02] border-0"
+              className={`bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-xl hover:shadow-2xl transition-all cursor-pointer hover:scale-[1.02] border-0 ${!isMobile ? 'col-span-2' : ''}`}
               onClick={() => setSelectedMode("fluent-chat")}
             >
               <CardContent className="p-6">
@@ -140,13 +138,13 @@ const SpeakingGym = () => {
               </CardContent>
             </Card>
 
-            {/* Side Tasks - Scenario Workouts */}
-            <div>
+            {/* Targeted Workouts */}
+            <div className={!isMobile ? 'col-span-2' : ''}>
               <div className="flex items-center gap-2 mb-4">
                 <Target className="w-5 h-5 text-gray-600" />
                 <h3 className="text-lg font-semibold text-gray-800">Targeted Workouts</h3>
               </div>
-              <div className="space-y-3">
+              <div className={`grid gap-3 ${!isMobile ? 'grid-cols-3' : ''}`}>
                 {scenarios.map((scenario) => {
                   const IconComponent = scenario.icon;
                   return (
@@ -179,15 +177,17 @@ const SpeakingGym = () => {
 
         {/* Active Session */}
         {selectedMode && (
-          <div className="space-y-6">
-            <Button
-              variant="outline"
-              onClick={() => setSelectedMode(null)}
-              className="mb-4 hover:scale-105 transition-transform"
-            >
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
+          <div className={`space-y-6 ${!isMobile ? 'grid grid-cols-2 gap-6' : ''}`}>
+            <div className={!isMobile ? 'col-span-2' : ''}>
+              <Button
+                variant="outline"
+                onClick={() => setSelectedMode(null)}
+                className="mb-4 hover:scale-105 transition-transform"
+              >
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
+            </div>
 
             {/* Live Performance Meter */}
             {isRecording && (
@@ -210,7 +210,7 @@ const SpeakingGym = () => {
               </Card>
             )}
 
-            {/* Enhanced AI Coach Card */}
+            {/* AI Coach */}
             <Card className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2">
@@ -237,7 +237,7 @@ const SpeakingGym = () => {
                     </p>
                   </div>
                   
-                  {/* Perfect Phrases Display */}
+                  {/* Perfect Phrases */}
                   {perfectPhrases.length > 0 && (
                     <div className="space-y-2">
                       <div className="text-sm font-semibold flex items-center gap-2">
@@ -268,7 +268,7 @@ const SpeakingGym = () => {
               </CardContent>
             </Card>
 
-            {/* Enhanced Recording Interface with Dynamic States */}
+            {/* Recording Interface */}
             <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
               <CardContent className="p-8 text-center">
                 <div className="space-y-4">
@@ -294,12 +294,10 @@ const SpeakingGym = () => {
                       )}
                     </Button>
                     
-                    {/* Pulsing glow effect when ready */}
                     {!isRecording && !isProcessing && (
                       <div className="absolute -inset-4 bg-green-400/30 rounded-full animate-ping"></div>
                     )}
                     
-                    {/* Recording pulse effect */}
                     {isRecording && (
                       <div className="absolute -inset-4 border-4 border-red-300 rounded-full animate-ping"></div>
                     )}
@@ -332,7 +330,7 @@ const SpeakingGym = () => {
               </CardContent>
             </Card>
 
-            {/* Enhanced Feedback Card */}
+            {/* Feedback */}
             <Card className="bg-green-50 border-green-200 shadow-lg">
               <CardContent className="p-5">
                 <div className="flex items-center gap-2 mb-2">

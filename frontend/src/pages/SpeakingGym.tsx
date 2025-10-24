@@ -4,7 +4,7 @@ import { Mic, ChevronLeft, Volume2, RotateCcw, Play, Star } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
-const BACKEND_URL = 'ws://127.0.0.1:8000'; // Local dev WebSocket URL
+const BACKEND_URL = import.meta.env.VITE_BACKEND_WEBSOCKET_URL || 'ws://127.0.0.1:8000';
 
 // Helper components for visual feedback
 const AudioWaveform = () => (

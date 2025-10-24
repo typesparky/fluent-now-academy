@@ -12,7 +12,14 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Explicitly configure CryptContext to avoid auto-detection issues
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+    # Additional bcrypt settings for reliability
+    bcrypt__min_rounds=4,
+    bcrypt__max_rounds=31
+)
 security = HTTPBearer()
 
 def verify_password(plain_password, hashed_password):

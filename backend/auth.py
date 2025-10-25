@@ -14,11 +14,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Explicitly configure CryptContext to avoid auto-detection issues
 pwd_context = CryptContext(
-    schemes=["bcrypt"],
+    schemes=["pbkdf2_sha256", "bcrypt"],
     deprecated="auto",
-    # Additional bcrypt settings for reliability
-    bcrypt__min_rounds=4,
-    bcrypt__max_rounds=31
+    # PBKDF2 settings for security
+    pbkdf2_sha256__default_rounds=30000
 )
 security = HTTPBearer()
 

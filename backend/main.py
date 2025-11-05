@@ -3,6 +3,7 @@ import asyncio
 import traceback
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from google.genai.types import LiveConnectConfig, AudioTranscriptionConfig, SpeechConfig, VoiceConfig, PrebuiltVoiceConfig
 from google import genai
 from pydantic import BaseModel
@@ -35,6 +36,16 @@ MODEL_ID = "gemini-live-2.5-flash-preview-native-audio"
 
 # --- Initialization ---
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://94.130.177.80", "http://localhost", "http://127.0.0.1"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 genai_client = None
 
 @app.on_event("startup")

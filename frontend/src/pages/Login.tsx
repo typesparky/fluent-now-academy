@@ -1,11 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { useAuth } from '../components/AuthContext';
-import { AlertTriangle } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,9 +11,8 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const navigate = useNavigate();
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://94.130.177.80/api';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
-// IMPORTANT: This URL will need to be changed to the deployed Cloud Run URL for production.
-const BACKEND_URL = 'ws://127.0.0.1:8000'; // Local dev WebSocket URL
+// Use environment variable for WebSocket URL
+const wsUrl = import.meta.env.VITE_BACKEND_WEBSOCKET_URL || '/conversation';
+const BACKEND_WEBSOCKET_URL = wsUrl.startsWith('ws') ? wsUrl : `ws://${window.location.host}${wsUrl}`;
 
 export const SpeakingGym = () => {
     const [isRecording, setIsRecording] = useState(false);
@@ -14,7 +15,7 @@ export const SpeakingGym = () => {
     const isPlayingRef = useRef<boolean>(false);
 
     const { sendMessage, lastMessage, readyState } = useWebSocket(
-        `${BACKEND_URL}/conversation`, {
+        BACKEND_WEBSOCKET_URL, {
             onOpen: () => console.log('WebSocket connection established.'),
             shouldReconnect: (_closeEvent) => true,
         }

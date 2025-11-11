@@ -177,7 +177,7 @@ async def conversation_endpoint(websocket: WebSocket):
 
     except WebSocketDisconnect:
         print("Client disconnected.")
-    except ExceptionGroup as eg:
+    except Exception as eg:
         print(f"An error occurred in the TaskGroup: {eg}")
         traceback.print_exception(eg)
     except Exception as e:

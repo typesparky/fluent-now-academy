@@ -1,4 +1,4 @@
-import { Home, Mic, TrendingUp, User } from "lucide-react";
+import { Home, Mic, TrendingUp, User, Users } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../lib/utils";
 import { useIsMobile } from "../hooks/use-mobile";
@@ -11,6 +11,7 @@ const Navigation = () => {
     { path: "/", icon: Home, label: "Home" },
     { path: "/speaking-gym", icon: Mic, label: "Speaking Gym" },
     { path: "/progress", icon: TrendingUp, label: "Progress" },
+    { path: "/social", icon: Users, label: "Social" },
     { path: "/profile", icon: User, label: "Profile" },
   ];
 

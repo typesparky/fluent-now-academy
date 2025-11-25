@@ -1,21 +1,24 @@
-import { ReactNode, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { ReactNode } from 'react';
 
 interface ProtectedRouteProps {
   children: ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      window.location.href = '/login';
-    }
-  }, [isAuthenticated]);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
-  if (!isAuthenticated) {
-    return null;
+  if (!user) {
+    return <Navigate to="/login" />;
   }
 
   return <>{children}</>;

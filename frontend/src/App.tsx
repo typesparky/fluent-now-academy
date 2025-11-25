@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import SpeakingGym from "./pages/SpeakingGym";
 import ProgressPage from "./pages/Progress";
 import Profile from "./pages/Profile";
+import Social from "./pages/Social";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -37,6 +38,7 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/speaking-gym" element={<ProtectedRoute><SpeakingGym /></ProtectedRoute>} />
                 <Route path="/progress" element={<ProtectedRoute><ProgressPage /></ProtectedRoute>} />
+                <Route path="/social" element={<ProtectedRoute><Social /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
